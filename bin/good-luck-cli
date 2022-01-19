@@ -1,0 +1,32 @@
+#!/usr/bin/env node
+const figlet = require('figlet');
+const Printer = require('@darkobits/lolcatjs');
+const { program } = require('commander');
+const _version = require('../package.json').version;
+const chalk = require('chalk'); // chalk 4.x可以使用require，5.x不可以
+
+const versionStr = figlet.textSync('Hello');
+
+// @darkobits/lolcatjs 3.1.3使用default，3.1.5直接使用Printer.fromString
+program.version(Printer.default.fromString(`     MY手架${_version}` + '\n' + versionStr));
+
+// 用户输入字典
+const bindHandler = {
+    init() {
+        console.log('初始化项目')
+    },
+}
+program
+    .usage('[cmd] <options>')
+    .arguments('<cmd> [env]')
+    .action(function (cmd, otherParams) {
+        let handle = bindHandler[cmd];
+        if (typeof handle === 'undefined') {
+            console.log(chalk.blue('您输入的：') + chalk.red(`${cmd}，`) + chalk.yellow(`命令暂时不支持`));
+        } else {
+            handle(otherParams);
+        }
+    })
+
+
+program.parse(process.argv);

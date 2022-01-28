@@ -4,16 +4,33 @@ const Printer = require('@darkobits/lolcatjs');
 const { program } = require('commander');
 const _version = require('../package.json').version;
 const chalk = require('chalk'); // chalk 4.x可以使用require，5.x不可以
+const rimraf = require('rimraf'); // Windows删除大文件使用
 
 const versionStr = figlet.textSync('Hello');
 
 // @darkobits/lolcatjs 3.1.3使用default，3.1.5直接使用Printer.fromString
 program.version(Printer.default.fromString(`     MY手架${_version}` + '\n' + versionStr));
+program.option('init', '初始化项目')
+program.option('del <path> [<path> ...]', '删除大文件')
 
 // 用户输入字典
 const bindHandler = {
     init() {
         console.log('初始化项目')
+    },
+    del() {
+        const args = process.argv.slice(3)
+        args.forEach(item => {
+            rimraf(item, {}, (err) => {
+                if (err) {
+                    console.log('出现了错误')
+                    throw err;
+                } else {
+                    console.log('删除' + chalk.green(` ${item} `) + '成功了~😁')
+                }
+            })
+        })
+
     },
 }
 program

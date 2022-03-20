@@ -20,13 +20,17 @@ const bindHandler = {
     },
     del() {
         const args = process.argv.slice(3)
+        if (!args.length) {
+            console.log(chalk.redBright('请输入需要删除的目录或文件!'))
+            return
+        }
         args.forEach(item => {
             rimraf(item, {}, (err) => {
                 if (err) {
-                    console.log('出现了错误')
+                    console.log(chalk.redBright('出现了错误'))
                     throw err;
                 } else {
-                    console.log('删除' + chalk.green(` ${item} `) + '成功了~😁')
+                    console.log('删除' + chalk.green(` ${item} `) + '成功了~ 时间：' + new Date().toLocaleString())
                 }
             })
         })

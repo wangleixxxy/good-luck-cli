@@ -1,10 +1,18 @@
 #!/usr/bin/env node
+
+/**
+ * 1. 安装包名：good-luck-cli，命令行 glc
+ * 2. 如何本地联调？ npm link
+ */ 
 const figlet = require('figlet');
 const Printer = require('@darkobits/lolcatjs');
 const { program } = require('commander');
 const _version = require('../package.json').version;
 const chalk = require('chalk'); // chalk 4.x可以使用require，5.x不可以
 const rimraf = require('rimraf'); // Windows删除大文件使用
+const { resolve, join, parse } = require('path');
+const fs = require('fs');
+const mammoth = require("mammoth");
 
 const versionStr = figlet.textSync('Hello');
 
@@ -12,6 +20,7 @@ const versionStr = figlet.textSync('Hello');
 program.version(Printer.default.fromString(`     MY手架${_version}` + '\n' + versionStr));
 program.option('init', '初始化项目')
 program.option('del <path> [<path> ...]', '删除大文件')
+// program.option('tf /path/to/demo.docx', '转换docx为html元素')
 
 // 用户输入字典
 const bindHandler = {
@@ -36,6 +45,38 @@ const bindHandler = {
         })
 
     },
+    // 转换文件
+    // tf() {
+    //     const args = process.argv.slice(3)
+    //     if (!args.length) {
+    //         console.log(chalk.redBright('请输入对应参数!'))
+    //         return
+    //     }
+    //     const [ filesPath ] = args
+    //     const filePath = args[0]
+    //     if (!filePath) {
+    //         console.log(chalk.redBright('请输入需要转换的文件名!'))
+    //         return
+    //     }
+    //     const toFileName = resolve(__dirname) + '/' + parse(filePath).name + '.html'
+
+    //     mammoth.convertToHtml({ path: join(__dirname, filesPath) })
+    //             .then((result) => {
+    //                 var html = result.value; // The generated HTML
+    //                 var messages = result.messages; // Any messages, such as warnings during conversion
+    //                 fs.writeFile(toFileName, html, (err) => {
+    //                     if (err) {
+    //                         console.log(chalk.redBright('出现错误，写入失败!\n' + messages))
+    //                         return;
+    //                     }
+    //                     console.log(chalk.green('写入成功，时间：' + new Date().toLocaleString()))
+    //                 })
+    //             })
+    //             .catch((err) => {
+    //                 console.log(chalk.redBright('转换失败!\n' + err))
+    //             })
+    //             .done();
+    // },
 }
 program
     .usage('[cmd] <options>')
